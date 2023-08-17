@@ -21,10 +21,16 @@ void captureVideo(const std::string& pipeline)
             break;
 
         cv::imshow(windowName, frame);
-
+        if(cv::waitKey(1) == 'a')
+        {
+          cv::imwrite("captured_image.jpg",frame);
+          std::cout <<"Picture taken..." << std::endl;
+          cv::imshow("Captured image",frame);
+        }
         // Exit the loop if 'q' is pressed
         if (cv::waitKey(1) == 'q')
             break;
+            
     }
 
     cap.release();
@@ -34,7 +40,7 @@ void captureVideo(const std::string& pipeline)
 int main()
 {
     // Define the gstreamer pipeline parameters
-    int sensor_mode = 0;
+    int sensor_id = 0;
     int capture_width = 1280;
     int capture_height = 720;
     int display_width = 960;  // Updated display width
@@ -44,10 +50,10 @@ int main()
 
     // Construct the gstreamer pipelines for the two cameras
 
-    std::string pipeline1 = "nvarguscamerasrc sensor-id=0 ! video/x-raw(memory:NVMM), width=1280, height=720, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, width=960, height=540, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink";
+    std::string pipeline1 = "nvarguscamerasrc sensor-id=0 ! video/x-raw(memory:NVMM), width=1280, height=720, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, width=640, height=480, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink";
 
 
-    std::string pipeline2 = "nvarguscamerasrc sensor-id=1 ! video/x-raw(memory:NVMM), width=1280, height=720, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, width=960, height=540, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink";
+    std::string pipeline2 = "nvarguscamerasrc sensor-id=1 ! video/x-raw(memory:NVMM), width=1280, height=720, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, width=640, height=480, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink";
     
 
     // Start two threads to capture video from the two cameras
